@@ -16,40 +16,6 @@ class AddBook extends React.Component {
 
 
  // localhost:3001/deleteCat/1?ownerName=razan
- deleteBook = async(index) =>{
-    console.log(index);
-    let paramsObj = {
-      ownerName:this.state.ownerName
-    }
-    let catsData = await axios.delete(`${this.state.server}/deleteCat/${index}`,{params:paramsObj})
-    // index: req.params >> ownerName:req.query
-
-    // let catsData = await axios.delete(`${this.state.server}/deleteCat`,{params:paramsObj})
-    // // index: req.query >> ownerName:req.query
-
-    // let catsData = await axios.delete(`${this.state.server}/deleteCat?ownerName=${this.state.ownerName}&index=${index}`)
-    // // index: req.query >> ownerName:req.query
-
-    this.setState({
-      cats:catsData.data
-    })
-
-
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -59,10 +25,10 @@ class AddBook extends React.Component {
 
         // let email = user.email
         // console.log("addbook", email);
-        let bookName = event.target.bookName.value;
-        let bookDesc = event.target.bookDesc.value;
-        let bookStatus = event.target.bookStatus.value;
-        console.log(bookName)
+        // let bookName = event.target.bookName.value;
+        // let bookDesc = event.target.bookDesc.value;
+        // let bookStatus = event.target.bookStatus.value;
+        // console.log(bookName)
 
         const BookFormData = {
             bookName: event.target.bookName.value,
@@ -70,7 +36,7 @@ class AddBook extends React.Component {
             bookStatus: event.target.bookStatus.value
         }
         // we need to make this email dynamic
-        let bookData = await axios.post(`http://localhost:3001/books?email=laithhayajneh98@gmail.com`, BookFormData)
+        let bookData = await axios.post(`http://localhost:3001/books?email=osqadoomy@gmail.com`, BookFormData)
         console.log(bookData)
         this.setState({
             books: bookData.data
