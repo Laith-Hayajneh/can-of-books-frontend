@@ -15,7 +15,7 @@ import { withAuth0 } from '@auth0/auth0-react';
 import Button from 'react-bootstrap/Button'
 import AddBook from './components/AddBook';
 // import { useAuth0 } from '@auth0/auth0-react';
-import AddBookForm from './components/AddBookForm'
+// import AddBookForm from './components/AddBookForm'
 
 class App extends React.Component {
   constructor(props) {
@@ -29,15 +29,15 @@ class App extends React.Component {
     }
   }
 
-  addBook = (event) => {
+  // addBook = (event) => {
 
-    let email = this.props.auth0.user.email
-    console.log("addbook", email);
-    let bookName = event.target.bookName.value;
-    let bookDesc = event.target.bookDesc.value;
-    let bookStatus = event.target.bookStatus.value;
-    console.log(bookName)
-  }
+  //   let email = this.props.auth0.user.email
+  //   console.log("addbook", email);
+  //   // let bookName = event.target.bookName.value;
+  //   // let bookDesc = event.target.bookDesc.value;
+  //   // let bookStatus = event.target.bookStatus.value;
+  //   // console.log(bookName)
+  // }
 
   showmodal = () => {
     this.setState({

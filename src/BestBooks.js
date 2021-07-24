@@ -5,8 +5,9 @@ import './BestBooks.css';
 import axios from 'axios';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button'
-import { useAuth0 } from '@auth0/auth0-react';
-
+// import { useAuth0 } from '@auth0/auth0-react';
+import UpdateFormModal from './components/UpdateFormModal';
+import { withAuth0 } from '@auth0/auth0-react';
 
 class MyFavoriteBooks extends React.Component {
 
@@ -18,7 +19,10 @@ class MyFavoriteBooks extends React.Component {
       status: [],
       responseData: [],
       books:[],
-      server: process.env.REACT_APP_SERVER_URL
+      server: process.env.REACT_APP_SERVER_URL,
+      bookId: '',
+      showUpdateModal: false,
+
     }
   }
 
@@ -57,30 +61,103 @@ class MyFavoriteBooks extends React.Component {
 
 //http://localhost:3001/books/1?email=laithhayajneh98@gmail.com
 
-// localhost:3001/deleteCat/1?ownerName=razan
-deleteBook = async(index) =>{
-  // const { user, isAuthenticated } = useAuth0();
-  console.log(this.state.server)
 
-  console.log(index);
-  let paramsObj = {
-    emailAddress:"laithhayajneh98@gmail.com"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+deleteBook = async (id) => {
+
+
+
+  try {
+    
+    const SERVER = process.env.REACT_APP_SERVER_URL;
+
+    const booksData = await axios.delete(`${SERVER}/books/${id}?email=${this.props.auth0.user.email}`)
+
+    await this.setState({
+      books: booksData.data
+    })
+  } catch (error) {
+    console.error(error);
   }
-  let bookData = await axios.delete(`${this.state.server}/books/${index}`,{params:paramsObj.emailAddress})
-  // index: req.params >> ownerName:req.query
-
-  // let catsData = await axios.delete(`${this.state.server}/deleteCat`,{params:paramsObj})
-  // // index: req.query >> ownerName:req.query
-
-  // let bookData = await axios.delete(`${this.state.server}/books?email=laithhayajneh98@gmail.com&${index}`)
-  // // index: req.query >> ownerName:req.query
-
-  this.setState({
-    books:bookData.data
-  })
-
 
 }
+
+
+///////////////////////////////////////////////////////////////////////////////////
+
+
+showmodal = () => {
+  this.setState({
+    showModal: true
+  })
+}
+
+
+updateModel = async (id) => {
+  await this.setState({
+    showUpdateModal: true,
+    // id: id,
+    // book: this.state.books.find(element => element._id === id),
+  })
+  console.log('boook')
+}
+
+updateBook = async (event) => {
+  event.preventDefault();
+
+  const bookFormData = {
+    email: this.props.auth0.user.email,
+    bookName: event.target.bName.value,
+    bookDescription: event.target.bDescription.value,
+    bookStatus: event.target.bStatus.value,
+    bookImg: event.target.bImg.value,
+  }
+
+  try {
+    const SERVER = process.env.REACT_APP_SERVER_URL;
+
+    const booksData = await axios.put(`${SERVER}/books/${this.state.id}`, bookFormData)
+
+    this.setState({
+      books: booksData.data
+    })
+  } catch (error) {
+    console.error(error);
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -112,7 +189,10 @@ deleteBook = async(index) =>{
                   <Card.Text>
                   <p>{book.status}</p>
                   </Card.Text>
-                  <Button onClick={this.deleteBook} variant="primary">Go somewhere</Button>
+                  <Button variant="outline-warning" onClick={() => this.updateModel(book._id)}>Update Book</Button>
+                  <UpdateFormModal show={this.state.showUpdateModal} sendData={this.UpdateFormModal} />
+
+                  <Button variant="outline-danger" onClick={() => this.deleteBook(book._id)}>Delete Book</Button>
                 </Card.Body>
               </Card>
             </>
@@ -123,4 +203,4 @@ deleteBook = async(index) =>{
   }
 }
 
-export default MyFavoriteBooks;
+export default withAuth0(MyFavoriteBooks);
