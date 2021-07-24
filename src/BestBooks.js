@@ -22,10 +22,10 @@ class MyFavoriteBooks extends React.Component {
       server: process.env.REACT_APP_SERVER_URL,
       bookId: '',
       showUpdateModal: false,
-
+      book: {},
+      id: "",
     }
   }
-
 
   componentDidMount = async () => {
     // we need to make this email dynamic
@@ -41,6 +41,7 @@ class MyFavoriteBooks extends React.Component {
       responseData: responseData.data
     })
     console.log(responseData)
+    console.log('this is books',this.state.books);
 
   }
 
@@ -76,13 +77,30 @@ class MyFavoriteBooks extends React.Component {
   }
 
 
+  handleClose = () => {
+
+    this.setState({
+      showUpdateModal: false
+    })
+  }
+
+
+
+
+
+
+
   updateModel = async (id) => {
     await this.setState({
       showUpdateModal: true,
-      // id: id,
-      // book: this.state.books.find(element => element._id === id),
+      id: id,
+      book: this.state.responseData.find(element => element._id === id),
+      // name:this.state.name,
+      // disc:this.state.books[id].description
+      
+      // status:this.state.responseData[id].status
     })
-    console.log('boook')
+    console.log(this.state.book)
   }
 
   updateBook = async (event) => {
@@ -90,15 +108,15 @@ class MyFavoriteBooks extends React.Component {
 
     const bookFormData = {
       email: this.props.auth0.user.email,
-      bookName: event.target.bName.value,
-      bookDescription: event.target.bDescription.value,
-      bookStatus: event.target.bStatus.value,
-      bookImg: event.target.bImg.value,
+      bookName: event.target.bookName.value,
+      bookDescription: event.target.bookDesc.value,
+      bookStatus: event.target.bookStatus.value,
+      
     }
 
     try {
       const SERVER = process.env.REACT_APP_SERVER_URL;
-
+console.log('uuyyyuyu',this.state.bookId)
       const booksData = await axios.put(`${SERVER}/books/${this.state.id}`, bookFormData)
 
       this.setState({
@@ -133,7 +151,7 @@ class MyFavoriteBooks extends React.Component {
   render() {
     return (
       <Jumbotron>
-        <h1>My Favorite Books</h1>
+        <h1 >My Favorite Books</h1>
         <p>
           This is a collection of my favorite books
         </p>
@@ -159,7 +177,7 @@ class MyFavoriteBooks extends React.Component {
                     <p>{book.status}</p>
                   </Card.Text>
                   <Button variant="outline-warning" onClick={() => this.updateModel(book._id)}>Update Book</Button>
-                  <UpdateFormModal show={this.state.showUpdateModal} sendData={this.UpdateFormModal} />
+                  <UpdateFormModal show={this.state.showUpdateModal} updateBook={this.updateBook} closing={this.handleClose} book={this.state.book} />
 
                   <Button variant="outline-danger" onClick={() => this.deleteBook(book._id)}>Delete Book</Button>
                 </Card.Body>
