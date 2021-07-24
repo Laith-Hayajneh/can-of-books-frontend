@@ -18,7 +18,7 @@ class MyFavoriteBooks extends React.Component {
       description: [],
       status: [],
       responseData: [],
-      books:[],
+      books: [],
       server: process.env.REACT_APP_SERVER_URL,
       bookId: '',
       showUpdateModal: false,
@@ -28,9 +28,9 @@ class MyFavoriteBooks extends React.Component {
 
 
   componentDidMount = async () => {
-        // we need to make this email dynamic
-
-    let url = `http://localhost:3001/books?email=laithhayajneh98@gmail.com`
+    // we need to make this email dynamic
+    const SERVER = process.env.REACT_APP_SERVER_URL;
+    let url = `${SERVER}/books?email=${this.props.auth0.user.email}`
 
     let responseData = await axios.get(url)
 
@@ -42,104 +42,73 @@ class MyFavoriteBooks extends React.Component {
     })
     console.log(responseData)
 
-    // await axios.get(url).then(response => {
-    //     books = response.data
-    //     this.setState
-    //     let booksArr = books.map(item => {
-    //         return item
-    //     })
-    //     res.json(booksArr)
-    // })
   }
 
 
 
 
 
+  deleteBook = async (id) => {
 
+    try {
 
+      const SERVER = process.env.REACT_APP_SERVER_URL;
 
-//http://localhost:3001/books/1?email=laithhayajneh98@gmail.com
+      const booksData = await axios.delete(`${SERVER}/books/${id}?email=${this.props.auth0.user.email}`)
 
+      await this.setState({
+        books: booksData.data
+      })
+    } catch (error) {
+      console.error(error);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-deleteBook = async (id) => {
-
-
-
-  try {
-    
-    const SERVER = process.env.REACT_APP_SERVER_URL;
-
-    const booksData = await axios.delete(`${SERVER}/books/${id}?email=${this.props.auth0.user.email}`)
-
-    await this.setState({
-      books: booksData.data
-    })
-  } catch (error) {
-    console.error(error);
   }
 
-}
+
+  ///////////////////////////////////////////////////////////////////////////////////
 
 
-///////////////////////////////////////////////////////////////////////////////////
-
-
-showmodal = () => {
-  this.setState({
-    showModal: true
-  })
-}
-
-
-updateModel = async (id) => {
-  await this.setState({
-    showUpdateModal: true,
-    // id: id,
-    // book: this.state.books.find(element => element._id === id),
-  })
-  console.log('boook')
-}
-
-updateBook = async (event) => {
-  event.preventDefault();
-
-  const bookFormData = {
-    email: this.props.auth0.user.email,
-    bookName: event.target.bName.value,
-    bookDescription: event.target.bDescription.value,
-    bookStatus: event.target.bStatus.value,
-    bookImg: event.target.bImg.value,
-  }
-
-  try {
-    const SERVER = process.env.REACT_APP_SERVER_URL;
-
-    const booksData = await axios.put(`${SERVER}/books/${this.state.id}`, bookFormData)
-
+  showmodal = () => {
     this.setState({
-      books: booksData.data
+      showModal: true
     })
-  } catch (error) {
-    console.error(error);
   }
 
-}
+
+  updateModel = async (id) => {
+    await this.setState({
+      showUpdateModal: true,
+      // id: id,
+      // book: this.state.books.find(element => element._id === id),
+    })
+    console.log('boook')
+  }
+
+  updateBook = async (event) => {
+    event.preventDefault();
+
+    const bookFormData = {
+      email: this.props.auth0.user.email,
+      bookName: event.target.bName.value,
+      bookDescription: event.target.bDescription.value,
+      bookStatus: event.target.bStatus.value,
+      bookImg: event.target.bImg.value,
+    }
+
+    try {
+      const SERVER = process.env.REACT_APP_SERVER_URL;
+
+      const booksData = await axios.put(`${SERVER}/books/${this.state.id}`, bookFormData)
+
+      this.setState({
+        books: booksData.data
+      })
+    } catch (error) {
+      console.error(error);
+    }
+
+  }
 
 
 
@@ -172,9 +141,9 @@ updateBook = async (event) => {
           return (
             <>
               <Card>
-                
-                
-               
+
+
+
               </Card>
 
 
@@ -184,10 +153,10 @@ updateBook = async (event) => {
                 <Card.Body>
                   <Card.Title><p>{book.name}</p></Card.Title>
                   <Card.Text>
-                  <p>{book.description}</p>
+                    <p>{book.description}</p>
                   </Card.Text>
                   <Card.Text>
-                  <p>{book.status}</p>
+                    <p>{book.status}</p>
                   </Card.Text>
                   <Button variant="outline-warning" onClick={() => this.updateModel(book._id)}>Update Book</Button>
                   <UpdateFormModal show={this.state.showUpdateModal} sendData={this.UpdateFormModal} />

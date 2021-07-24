@@ -2,7 +2,7 @@ import React from 'react'
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import AddBookForm from './AddBookForm'
-// import { withAuth0 } from '@auth0/auth0-react';
+import { withAuth0 } from '@auth0/auth0-react';
 // import { useAuth0 } from '@auth0/auth0-react';
 import axios from 'axios';
 
@@ -36,7 +36,10 @@ class AddBook extends React.Component {
             bookStatus: event.target.bookStatus.value
         }
         // we need to make this email dynamic
-        let bookData = await axios.post(`${process.env.REACT_APP_SERVER_URL}/books?email=laithhayajneh98@gmail.com`, BookFormData)
+
+        const SERVER = process.env.REACT_APP_SERVER_URL;
+
+        let bookData = await axios.post(`${SERVER}/books?email=${this.props.auth0.user.email}`, BookFormData)
         console.log(bookData)
         this.setState({
             books: bookData.data
@@ -77,4 +80,4 @@ class AddBook extends React.Component {
 
 // const { user, isAuthenticated } = useAuth0();
 
-export default AddBook
+export default withAuth0(AddBook);
